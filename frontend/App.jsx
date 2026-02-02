@@ -95,10 +95,14 @@ function AforoView({ showNotification }) {
     e.preventDefault();
     setLoading(true);
     try {
+      const payload = {
+        ...formData,
+        capacidad_maxima: parseInt(formData.capacidad_maxima, 10)
+      };
       const response = await fetch(`${API_URL}/aforo/recintos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
@@ -119,14 +123,38 @@ function AforoView({ showNotification }) {
   const loadRecintos = async () => {
     try {
       setLoading(true);
-      // Aquí iría el GET a /aforo/recintos
-      // Por ahora solo mostrar el formulario
+      const response = await fetch(`${API_URL}/aforo/recintos`);
+      if (!response.ok) {
+        throw new Error('Error al cargar recintos');
+      }
+      const data = await response.json();
+
+      const withOcupacion = await Promise.all(
+        data.map(async (recinto) => {
+          try {
+            const ocupacionResp = await fetch(`${API_URL}/aforo/recintos/${recinto.id}/ocupacion`);
+            if (!ocupacionResp.ok) {
+              return { ...recinto, ocupacion_actual: 0, porcentaje_ocupacion: 0, estado: 'NORMAL' };
+            }
+            const ocupacion = await ocupacionResp.json();
+            return { ...recinto, ...ocupacion };
+          } catch {
+            return { ...recinto, ocupacion_actual: 0, porcentaje_ocupacion: 0, estado: 'NORMAL' };
+          }
+        })
+      );
+
+      setRecintos(withOcupacion);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadRecintos();
+  }, []);
 
   return (
     <div className="grid lg:grid-cols-3 gap-8">
@@ -229,7 +257,9 @@ function AforoView({ showNotification }) {
 }
 
 function RecintoCard({ recinto }) {
-  const occupancyPercent = 0; // Será calculado del backend
+  const occupancyPercent = recinto?.porcentaje_ocupacion ?? 0;
+  const ocupacionActual = recinto?.ocupacion_actual ?? 0;
+  const capacidadMaxima = recinto?.capacidad_maxima ?? 0;
   const statusColor = occupancyPercent < 85 ? 'bg-green-500/20 border-green-500/50' : 
                      occupancyPercent < 100 ? 'bg-yellow-500/20 border-yellow-500/50' :
                      'bg-red-500/20 border-red-500/50';
@@ -238,6 +268,12 @@ function RecintoCard({ recinto }) {
     <div className={`p-4 border rounded-lg backdrop-blur-sm ${statusColor}`}>
       <h3 className="font-medium text-white mb-2">{recinto.nombre}</h3>
       <p className="text-sm text-gray-300">{recinto.ubicacion}</p>
+      <div className="mt-3 text-sm text-gray-200">
+        {ocupacionActual} / {capacidadMaxima} personas ({occupancyPercent}%)
+      </div>
+      <div className="mt-2 text-xs text-gray-300">
+        Estado: {recinto.estado || 'NORMAL'}
+      </div>
     </div>
   );
 }

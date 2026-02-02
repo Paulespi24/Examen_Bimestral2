@@ -29,6 +29,10 @@ async def create_recinto(recinto: RecintoCreate, db: Session = Depends(get_db)):
     db.refresh(db_recinto)
     return db_recinto
 
+@app.get("/recintos", response_model=list[RecintoResponse])
+async def list_recintos(db: Session = Depends(get_db)):
+    return db.query(Recinto).order_by(Recinto.id.desc()).all()
+
 @app.get("/recintos/{recinto_id}", response_model=RecintoResponse)
 async def get_recinto(recinto_id: int, db: Session = Depends(get_db)):
     recinto = db.query(Recinto).filter(Recinto.id == recinto_id).first()
