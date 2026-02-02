@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarnavalLogistics - Gestión de Logística de Carnavales</title>
+  </head>
+  <body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>🎉 CarnavalLogistics</h1>
+                <p>Plataforma de Logística de Festividades</p>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-dot online"></span>
+                    <span>API Gateway</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot online"></span>
+                    <span>Aforo Service</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot online"></span>
+                    <span>Permisos Service</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-btn active" data-tab="aforo">📊 Aforo</button>
+            <button class="nav-btn" data-tab="permisos">📋 Permisos Comerciales</button>
+        </nav>
+
+        <!-- SECCIÓN AFORO -->
+        <section id="aforo" class="tab-content active">
+            <div class="section-header">
+                <h2>Gestión de Aforo</h2>
+                <p>Capacidad y ocupación de recintos</p>
+            </div>
+
+            <div class="grid grid-2">
+                <!-- Crear Recinto -->
+                <div class="card">
+                    <h3>📍 Crear Recinto</h3>
+                    <form id="formRecinto">
+                        <input type="text" placeholder="Nombre del recinto" id="nombre" required>
+                        <input type="number" placeholder="Capacidad máxima" id="capacidad" required>
+                        <input type="text" placeholder="Ubicación" id="ubicacion" required>
+                        <button type="submit" class="btn btn-primary">Crear</button>
+                    </form>
+                </div>
+
+                <!-- Registrar Movimiento -->
+                <div class="card">
+                    <h3>➕/➖ Registrar Movimiento</h3>
+                    <form id="formMovimiento">
+                        <input type="number" placeholder="ID del recinto" id="recintoId" required>
+                        <select id="tipoMov" required>
+                            <option value="">Seleccionar tipo</option>
+                            <option value="entrada">Entrada</option>
+                            <option value="salida">Salida</option>
+                        </select>
+                        <input type="number" placeholder="Cantidad de personas" id="cantidad" required>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Estado de Recintos -->
+            <div class="card">
+                <h3>📊 Estado de Recintos</h3>
+                <div id="recintos-list" class="recintos-grid">
+                    <div class="loading">Cargando recintos...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN PERMISOS -->
+        <section id="permisos" class="tab-content">
+            <div class="section-header">
+                <h2>Permisos Comerciales</h2>
+                <p>Gestión de puestos y comerciantes</p>
+            </div>
+
+            <div class="grid grid-3">
+                <!-- Registrar Comerciante -->
+                <div class="card">
+                    <h3>👤 Registrar Comerciante</h3>
+                    <form id="formComerciante">
+                        <input type="text" placeholder="Nombre" id="nomComerciante" required>
+                        <input type="text" placeholder="Cédula" id="cedula" required>
+                        <input type="email" placeholder="Email" id="emailCom" required>
+                        <input type="text" placeholder="Teléfono" id="telefonoCom" required>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </form>
+                </div>
+
+                <!-- Crear Puesto -->
+                <div class="card">
+                    <h3>🏪 Crear Puesto</h3>
+                    <form id="formPuesto">
+                        <input type="text" placeholder="Nombre del puesto" id="nomPuesto" required>
+                        <input type="text" placeholder="Descripción" id="descPuesto" required>
+                        <input type="text" placeholder="Ubicación" id="ubPuesto" required>
+                        <button type="submit" class="btn btn-primary">Crear</button>
+                    </form>
+                </div>
+
+                <!-- Solicitar Permiso -->
+                <div class="card">
+                    <h3>📄 Solicitar Permiso</h3>
+                    <form id="formPermiso">
+                        <input type="number" placeholder="ID Comerciante" id="idCom" required>
+                        <input type="number" placeholder="ID Puesto" id="idPuesto" required>
+                        <input type="datetime-local" id="fechaInicio" required>
+                        <input type="datetime-local" id="fechaFin" required>
+                        <button type="submit" class="btn btn-primary">Solicitar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Listado de Permisos -->
+            <div class="card">
+                <h3>📋 Permisos Activos</h3>
+                <div id="permisos-list" class="permisos-table">
+                    <div class="loading">Cargando permisos...</div>
+                </div>
+            </div>
+
+            <!-- Listado de Comerciantes -->
+            <div class="card">
+                <h3>👥 Comerciantes Registrados</h3>
+                <div id="comerciantes-list" class="comerciantes-grid">
+                    <div class="loading">Cargando comerciantes...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de Notificación -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
