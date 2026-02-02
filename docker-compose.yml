@@ -21,9 +21,9 @@ services:
     ports:
       - "8001:8001"
     environment:
-      - DATABASE_URL=sqlite:///./aforo.db
+      - DATABASE_URL=sqlite:///./data/aforo.db
     volumes:
-      - aforo_db:/app
+      - aforo_db:/app/data
     networks:
       - carnival-network
 
@@ -32,9 +32,9 @@ services:
     ports:
       - "8002:8002"
     environment:
-      - DATABASE_URL=sqlite:///./permisos.db
+      - DATABASE_URL=sqlite:///./data/permisos.db
     volumes:
-      - permisos_db:/app
+      - permisos_db:/app/data
     networks:
       - carnival-network
 
